@@ -1,0 +1,91 @@
+#include <iostream>
+#include <cmath>
+#include <list>
+
+// Stała wartość dla liczby pi
+const double PI = 3.14159265358979323846;
+
+// Abstrakcyjna klasa Figura
+class Figura {
+public:
+    virtual double obliczPole() const = 0;  // Metoda abstrakcyjna do obliczania pola
+    virtual double obliczObwod() const = 0; // Metoda abstrakcyjna do obliczania obwodu
+    virtual ~Figura() {} // Wirtualny destruktor
+};
+
+// Klasa Trojkat dziedzicząca po Figurze
+class Trojkat : public Figura {
+private:
+    double a, b, c; // Boki trójkąta
+
+public:
+    Trojkat(double sideA, double sideB, double sideC) : a(sideA), b(sideB), c(sideC) {}
+
+    double obliczPole() const override {
+        // Wzór Herona
+        double p = (a + b + c) / 2;
+        return sqrt(p * (p - a) * (p - b) * (p - c));
+    }
+
+    double obliczObwod() const override {
+        return a + b + c; // Obwód trójkąta
+    }
+};
+
+// Klasa Kolo dziedzicząca po Figurze
+class Kolo : public Figura {
+private:
+    double promien; // Promień koła
+
+public:
+    Kolo(double r) : promien(r) {}
+
+    double obliczPole() const override {
+        return PI * promien * promien; // Pole koła: π * r^2
+    }
+
+    double obliczObwod() const override {
+        return 2 * PI * promien; // Obwód koła: 2 * π * r
+    }
+};
+
+// Klasa Prostokat dziedzicząca po Figurze
+class Prostokat : public Figura {
+private:
+    double szerokosc, wysokosc; // Szerokość i wysokość prostokąta
+
+public:
+    Prostokat(double w, double h) : szerokosc(w), wysokosc(h) {}
+
+    double obliczPole() const override {
+        return szerokosc * wysokosc; // Pole prostokąta: w * h
+    }
+
+    double obliczObwod() const override {
+        return 2 * (szerokosc + wysokosc); // Obwód prostokąta: 2 * (w + h)
+    }
+};
+
+int main() {
+    std::list<Figura*> listaFigur;
+
+    // Dodanie obiektów różnych figur do listy
+    listaFigur.push_back(new Kolo(3.0));           // Koło o promieniu 3
+    listaFigur.push_back(new Trojkat(4.0, 5.0, 6.0)); // Trójkąt o bokach 4, 5, 6
+    listaFigur.push_back(new Prostokat(2.0, 4.0));  // Prostokąt o wymiarach 2x4
+
+    // Wywołanie metod obliczających pole i obwód dla każdej figury
+    for (const auto& figura : listaFigur) {
+        std::cout << "Pole: " << figura->obliczPole() << ", Obwod: " << figura->obliczObwod() << std::endl;
+    }
+
+    // Zwolnienie pamięci zaalokowanej na obiekty
+    for (const auto& figura : listaFigur) {
+        delete figura;
+    }
+
+    return 0;
+}
+
+
+zmodyfikowane
