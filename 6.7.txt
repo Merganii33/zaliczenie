@@ -1,0 +1,102 @@
+#include <iostream>
+#include <cmath>
+#include <list>
+
+// Stała wartość dla liczby pi
+const double PI = 3.14159265358979323846;
+
+// Abstrakcyjna klasa Figura (KLASA)
+class Figura {
+public:
+    // Metoda abstrakcyjna do obliczania pola (METODA)
+    virtual double obliczPole() const = 0;  
+    
+    // Metoda abstrakcyjna do obliczania obwodu (METODA)
+    virtual double obliczObwod() const = 0; 
+    
+    // Wirtualny destruktor (METODA)
+    virtual ~Figura() {}
+};
+
+// Klasa Trojkat dziedzicząca po Figurze (KLASA, DZIEDZICZENIE)
+class Trojkat : public Figura {
+private:
+    double a, b, c; // Boki trójkąta (POLA)
+
+public:
+    // Konstruktor klasy Trojkat (METODA)
+    Trojkat(double sideA, double sideB, double sideC) : a(sideA), b(sideB), c(sideC) {}
+
+    // Implementacja metody do obliczania pola (METODA, POLIMORFIZM)
+    double obliczPole() const override {
+        // Wzór Herona
+        double p = (a + b + c) / 2;
+        return sqrt(p * (p - a) * (p - b) * (p - c));
+    }
+
+    // Implementacja metody do obliczania obwodu (METODA, POLIMORFIZM)
+    double obliczObwod() const override {
+        return a + b + c;
+    }
+};
+
+// Klasa Kolo dziedzicząca po Figurze (KLASA, DZIEDZICZENIE)
+class Kolo : public Figura {
+private:
+    double promien; // Promień koła (POLE)
+
+public:
+    // Konstruktor klasy Kolo (METODA)
+    Kolo(double r) : promien(r) {}
+
+    // Implementacja metody do obliczania pola (METODA, POLIMORFIZM)
+    double obliczPole() const override {
+        return PI * promien * promien;
+    }
+
+    // Implementacja metody do obliczania obwodu (METODA, POLIMORFIZM)
+    double obliczObwod() const override {
+        return 2 * PI * promien;
+    }
+};
+
+// Klasa Prostokat dziedzicząca po Figurze (KLASA, DZIEDZICZENIE)
+class Prostokat : public Figura {
+private:
+    double szerokosc, wysokosc; // Szerokość i wysokość prostokąta (POLA)
+
+public:
+    // Konstruktor klasy Prostokat (METODA)
+    Prostokat(double w, double h) : szerokosc(w), wysokosc(h) {}
+
+    // Implementacja metody do obliczania pola (METODA, POLIMORFIZM)
+    double obliczPole() const override {
+        return szerokosc * wysokosc;
+    }
+
+    // Implementacja metody do obliczania obwodu (METODA, POLIMORFIZM)
+    double obliczObwod() const override {
+        return 2 * (szerokosc + wysokosc);
+    }
+};
+
+int main() {
+    std::list<Figura*> listaFigur; // Lista wskaźników do obiektów klasy Figura (POLIMORFIZM)
+
+    // Dodanie obiektów różnych figur do listy (KLASY, DZIEDZICZENIE)
+    listaFigur.push_back(new Kolo(3.0));           // Tworzenie obiektu klasy Kolo
+    listaFigur.push_back(new Trojkat(4.0, 5.0, 6.0)); // Tworzenie obiektu klasy Trojkat
+    listaFigur.push_back(new Prostokat(2.0, 4.0));  // Tworzenie obiektu klasy Prostokat
+
+    // Wywołanie metod obliczających pole i obwód dla każdej figury (POLIMORFIZM)
+    for (const auto& figura : listaFigur) {
+        std::cout << "Pole: " << figura->obliczPole() << ", Obwod: " << figura->obliczObwod() << std::endl;
+    }
+
+    // Zwolnienie pamięci zaalokowanej na obiekty
+    for (const auto& figura : listaFigur) {
+        delete figura; // Wywołanie wirtualnych destruktorów (POLIMORFIZM)
+    }
+
+    return 0;
+}
